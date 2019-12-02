@@ -16,36 +16,36 @@ NOTE: this will be a constant on-going project, meaning that I will be adding ot
 #### Named Entity Recognition
 Using spaCy's entity recognition, it returns entities: person, organizations, geopolitical entities, locations, quantities, etc.
 
-![](images/app1.png)
+![](images/app1.PNG)
 
 
 #### Text Summarization
 Uses gensim's summarize function, giving the user the possibility of chosing a proportion (ratio) of the number of sentences from the total to be returned as the summary.
 
-![](images/app2.png)
+![](images/app2.PNG)
 
 
 #### Automated Keyword Extraction
 Here, a keyword extractor that uses the YAKE! package.
 
-![](images/app3.png)
+![](images/app3.PNG)
 
 #### Anonymize Personal Data
 There are several different approaches regarding data anonymization (from simple regex techniques to anonymizing data by using differential privacy, as in the case of machine learning models, etc.); it all depends on the business needs and type of access.
 Here, the approach is a simple and straightforward replacement of people's names by another string when the text is returned (firstly, the entity "PERSON" is extracted through spaCy's entity recognizer; the user may want to add in the code other entities, like Localizations).
 
-![](images/app4.png)
+![](images/app4.PNG)
 
 #### N-Grams Barplot
 The last two demos are the most simple and used ones over the years.
 The output here is a barplot with the most frequent words (using the old well known concept of bag of words), giving the user the possibility to choose between 1, 2 or 3 N-Grams.
 
-![](images/app5.png)
+![](images/app5.PNG)
 
 #### Wordcloud
 Finally, the visualization of the old pal wordcloud. Therefore, nothing fancy going on here.
 
-![](images/app6.png)
+![](images/app6.PNG)
 
 
 #### Installing
