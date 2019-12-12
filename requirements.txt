@@ -11,4 +11,4 @@ pandas==0.25.3
 numpy==1.16.4
 Pillow==6.2.1
 scikit_learn==0.22
-git+git://https://github.com/LIAAD/yake.git
+git+://https://github.com/LIAAD/yake.git
