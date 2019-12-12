@@ -1,1 +1,1 @@
-web: sh setup.sh && sudo apt install gcc && pip install git+https://github.com/LIAAD/yake && streamlit run app.py
+web: sh setup.sh && apt install gcc && pip install git+https://github.com/LIAAD/yake && streamlit run app.py
