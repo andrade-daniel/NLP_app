@@ -8,6 +8,7 @@ email = \"andrade.daniel@protonmail.com\"\n\
 echo "\
 [server]\n\
 headless = true\n\
-enableCORS=false\n\
 port = $PORT\n\
+enableCORS = false\n\
+\n\
 " > ~/.streamlit/config.toml
