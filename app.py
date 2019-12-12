@@ -5,7 +5,7 @@ import spacy
 import string
 import numpy as np
 from gensim.summarization import summarize
-import yake
+# import yake
 import plotly.express as px
 
 import re
@@ -136,46 +136,46 @@ def main():
 			st.success(summary_result)
 
 
-	# Automated Keyword Extraction
+	# # Automated Keyword Extraction
 
-	if st.sidebar.checkbox("Automated Keyword Extraction"):
-		st.subheader("Extract Keywords")
+	# if st.sidebar.checkbox("Automated Keyword Extraction"):
+	# 	st.subheader("Extract Keywords")
 
-		lang_options = st.selectbox("Choose language (EN/PT)",['EN','PT'])
+	# 	lang_options = st.selectbox("Choose language (EN/PT)",['EN','PT'])
 
-		if lang_options == 'EN':
-			lang_model = 'en'
-		elif lang_options == 'PT':
-			lang_model = 'pt'
-		else:
-			lang_model = 'en'
+	# 	if lang_options == 'EN':
+	# 		lang_model = 'en'
+	# 	elif lang_options == 'PT':
+	# 		lang_model = 'pt'
+	# 	else:
+	# 		lang_model = 'en'
 
-		message = st.text_area("Enter text inside the box...")
+	# 	message = st.text_area("Enter text inside the box...")
 
-		if st.button("Run"):
-			with st.spinner('Wait for it...'):
+	# 	if st.button("Run"):
+	# 		with st.spinner('Wait for it...'):
 				
-				# set YAKE! parameters
-				language = lang_model
-				max_ngram_size = 2
-				deduplication_thresold = 0.2
-				deduplication_algo = "seqm"
-				windowSize = 1
-				numOfKeywords = 10
+	# 			# set YAKE! parameters
+	# 			language = lang_model
+	# 			max_ngram_size = 2
+	# 			deduplication_thresold = 0.2
+	# 			deduplication_algo = "seqm"
+	# 			windowSize = 1
+	# 			numOfKeywords = 10
 
-				custom_kw_extractor = yake.KeywordExtractor(
-					lan=language,
-					n=max_ngram_size,
-					dedupLim=deduplication_thresold,
-					dedupFunc=deduplication_algo,
-					windowsSize=windowSize,
-					top=numOfKeywords,
-					features=None,
-				)
-				keywords = custom_kw_extractor.extract_keywords(message)
-				keywords = [kw for kw, res in keywords]
+	# 			custom_kw_extractor = yake.KeywordExtractor(
+	# 				lan=language,
+	# 				n=max_ngram_size,
+	# 				dedupLim=deduplication_thresold,
+	# 				dedupFunc=deduplication_algo,
+	# 				windowsSize=windowSize,
+	# 				top=numOfKeywords,
+	# 				features=None,
+	# 			)
+	# 			keywords = custom_kw_extractor.extract_keywords(message)
+	# 			keywords = [kw for kw, res in keywords]
 				
-				st.success('Keywords: ' + (', '.join(sorted(keywords))))
+	# 			st.success('Keywords: ' + (', '.join(sorted(keywords))))
 
 
 	# Data Anonymization (erasing names)
