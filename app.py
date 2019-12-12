@@ -11,10 +11,10 @@ import plotly.express as px
 import re
 import nltk
 import unidecode
-#nltk.download('stopwords')
+nltk.download('stopwords')
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import CountVectorizer
-#nltk.download('wordnet') 
+nltk.download('wordnet') 
 from os import path
 from PIL import Image
 from wordcloud import WordCloud
