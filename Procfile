@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run app.py
+web: sh setup.sh && pip install git+https://github.com/LIAAD/yake && streamlit run app.py
