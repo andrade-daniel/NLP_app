@@ -30,6 +30,7 @@ pt_stopwords = pt_stopwords.union(set([unidecode.unidecode(k) for k in pt_stopwo
 
 # text rank class
 
+@st.cache(suppress_st_warning = True)
 class TextRank4Keyword():
     """Extract keywords from text"""
     
