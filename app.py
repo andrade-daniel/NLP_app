@@ -176,301 +176,305 @@ class TextRank4Keyword():
 # function to extract entities
 @st.cache(suppress_st_warning = True)
 def entity_analyzer(text, lang_model):
-	nlp = spacy.load(lang_model)
-	doc = nlp(text)
-	tokens = [token.text for token in doc]
-	entities = [(entity.text, entity.label_) for entity in doc.ents]
-	return ['Entities":{}'.format(entities)]
+    nlp = spacy.load(lang_model)
+    doc = nlp(text)
+    tokens = [token.text for token in doc]
+    entities = [(entity.text, entity.label_) for entity in doc.ents]
+    return ['Entities":{}'.format(entities)]
 
 # function for anonymization
 # @st.cache(suppress_st_warning = True)
 def sanitize_names(text, lang_model):
-	nlp = spacy.load(lang_model)
-	doc = nlp(text)
-	redacted_sentences = []
-	for ent in doc.ents:
-		ent.merge()
-	for token in doc:
-		if token.ent_type_ in ['PER', 'PERSON']:
-			redacted_sentences.append("[CCCCCCENSOREDDDDDDD] ")
-		else:
-			redacted_sentences.append(token.string)
-	return "".join(redacted_sentences)	
+    nlp = spacy.load(lang_model)
+    doc = nlp(text)
+    redacted_sentences = []
+    for ent in doc.ents:
+        ent.merge()
+    for token in doc:
+        if token.ent_type_ in ['PER', 'PERSON']:
+            redacted_sentences.append("[CCCCCCENSOREDDDDDDD] ")
+        else:
+            redacted_sentences.append(token.string)
+    return "".join(redacted_sentences)	
 
 @st.cache(suppress_st_warning = True)
 def replace_punctuation(text):
-	new_text_ls = []
-	text_ls = [char for char in text]
-	for char in text_ls:
-		if char in string.punctuation:
-			char = " "
-
-		new_text_ls.append(char)
-
-	return "".join(new_text_ls)
+    # new_text_ls = []
+    # text_ls = [char for char in text]
+    # for char in text_ls:
+    #     if char in string.punctuation:
+    #         char = " "
+    #     new_text_ls.append(char)
+    text_ls = [char for char in text]
+    text_ls = [t.replace("\n", " ") for t in text_ls]
+    text_ls = [char for char in text_ls if char.isalnum() or char == " "]
+    text_ls = "".join(text_ls)
+    
+    return "".join(text_ls)
 
 @st.cache(suppress_st_warning = True)
 def clean_string(text, lang_options):
-	text = str(text)
-	text = text.lower()
-	text = replace_punctuation(text)
-	text = [word for word in text.split(" ")]
-	text = [word for word in text if not any(c.isdigit() for c in word)]
-	if lang_options == 'EN':
-		stop_words = en_stopwords
-	else:
-		stop_words = pt_stopwords
-	text = [tok for tok in text if not tok in stop_words]
-	text = " ".join(text).strip()
-	text = unidecode.unidecode(text)
-	return text
-	
+    text = str(text)
+    text = text.lower()
+    text = replace_punctuation(text)
+    text = [word for word in text.split(" ")]
+    text = [word for word in text if not any(c.isdigit() for c in word)]
+    if lang_options == 'EN':
+        stop_words = en_stopwords
+    else:
+        stop_words = pt_stopwords
+    text = [tok for tok in text if not tok in stop_words and tok != '']
+    text = " ".join(text)
+    text = unidecode.unidecode(text)
+    
+    return text
+
 @st.cache(suppress_st_warning = True)
 def get_top_n_words(corpus, ngrams, n=None):
-	vec1 = CountVectorizer(ngram_range=(ngrams, ngrams), 
-		max_features=2000).fit(corpus)
-	bag_of_words = vec1.transform(corpus)
-	sum_words = bag_of_words.sum(axis=0) 
-	words_freq = [(word, sum_words[0, idx]) for word, idx in     
-				vec1.vocabulary_.items()]
-	words_freq =sorted(words_freq, key = lambda x: x[1], 
-				reverse=True)
-	return words_freq[:n]
+    vec1 = CountVectorizer(ngram_range=(ngrams, ngrams), 
+        max_features=2000).fit(corpus)
+    bag_of_words = vec1.transform(corpus)
+    sum_words = bag_of_words.sum(axis=0) 
+    words_freq = [(word, sum_words[0, idx]) for word, idx in     
+                vec1.vocabulary_.items()]
+    words_freq = sorted(words_freq, key = lambda x: x[1], 
+                reverse=True)
+    return words_freq[:n]
 
 
 def main():
 
-	image = Image.open('images/wordcloud.png')
+    image = Image.open('images/wordcloud.png')
 
-	st.sidebar.image(image,  width=200)
-	st.sidebar.header("NLP demos")
-	st.sidebar.text("Select an option and see it in action!")
+    st.sidebar.image(image,  width=200, key='image1')
+    st.sidebar.header("NLP demos")
+    st.sidebar.text("Select an option and see it in action!")
 
-	st.title("Natural Language Processing demos")
-	st.markdown("""
-    	#### An NLP app for demonstration purposes: analyze your text!
-    	
+    st.title("Natural Language Processing demos")
+    st.markdown("""
+        #### An NLP app for demonstration purposes: analyze your text!
+        
 
-    	""")
-
-
-	# Named Entity Recognition
-
-	if st.sidebar.checkbox("Named Entity Recognition"):
-
-		lang_options = st.selectbox("Choose language (EN/PT)",['EN','PT'])
-
-		if lang_options == 'EN':
-			lang_model = 'en_core_web_sm'
-		else:
-			lang_model = 'pt_core_news_sm'
-
-		message = st.text_area("Enter text inside the box...")
-
-		if st.button("Run"):
-			with st.spinner('Wait for it...'):
-				entity_result = entity_analyzer(message, lang_model)
-			st.success(st.json(entity_result))
+        """)
 
 
-	# Summarization
+    # Named Entity Recognition
 
-	if st.sidebar.checkbox("Text Summarization"):
-		st.subheader("Summarize Your Text")
+    if st.sidebar.checkbox("Named Entity Recognition", key='check1'):
 
-		message = st.text_area("Enter text (EN only for now) inside the box...")
+        lang_options = st.selectbox("Choose language (EN/PT)",['EN','PT'], key='sel1')
 
-		ratio_value = st.slider('Select a ratio (%) that determines the proportion of the number of sentences of the original text to be chosen for the summary', 0, 100, (10))
+        if lang_options == 'EN':
+            lang_model = 'en_core_web_sm'
+        else:
+            lang_model = 'pt_core_news_sm'
 
-		if st.button("Run"):
-			with st.spinner('Wait for it...'):
-				summary_result = summarize(message, ratio=ratio_value/100)
-			st.success(summary_result)
+        message = st.text_area("Enter text inside the box...", key='ins1')
+
+        if st.button("Run", key='run1'):
+            with st.spinner('Wait for it...'):
+                entity_result = entity_analyzer(message, lang_model)
+            st.success(st.json(entity_result))
 
 
-	# # Automated Keyword Extraction
+    # Summarization
 
-	# if st.sidebar.checkbox("Automated Keyword Extraction"):
-	# 	st.subheader("Extract Keywords")
+    if st.sidebar.checkbox("Text Summarization", key='check2'):
+        st.subheader("Summarize Your Text")
 
-	# 	lang_options = st.selectbox("Choose language (EN/PT)",['EN','PT'])
+        message = st.text_area("Enter text (EN only for now) inside the box...", key='ins2')
 
-	# 	if lang_options == 'EN':
-	# 		lang_model = 'en'
-	# 	elif lang_options == 'PT':
-	# 		lang_model = 'pt'
-	# 	else:
-	# 		lang_model = 'en'
+        ratio_value = st.slider('Select a ratio (%) that determines the proportion of the number of sentences of the original text to be chosen for the summary', 0, 100, (10))
 
-	# 	message = st.text_area("Enter text inside the box...")
+        if st.button("Run", key='run2'):
+            with st.spinner('Wait for it...'):
+                summary_result = summarize(message, ratio=ratio_value/100)
+            st.success(summary_result)
 
-	# 	if st.button("Run"):
-	# 		with st.spinner('Wait for it...'):
-				
-	# 			# set YAKE! parameters
-	# 			language = lang_model
-	# 			max_ngram_size = 2
-	# 			deduplication_thresold = 0.2
-	# 			deduplication_algo = "seqm"
-	# 			windowSize = 1
-	# 			numOfKeywords = 10
 
-	# 			custom_kw_extractor = yake.KeywordExtractor(
-	# 				lan=language,
-	# 				n=max_ngram_size,
-	# 				dedupLim=deduplication_thresold,
-	# 				dedupFunc=deduplication_algo,
-	# 				windowsSize=windowSize,
-	# 				top=numOfKeywords,
-	# 				features=None,
-	# 			)
-	# 			keywords = custom_kw_extractor.extract_keywords(message)
-	# 			keywords = [kw for kw, res in keywords]
-				
-	# 			st.success('Keywords: ' + (', '.join(sorted(keywords))))
+    # # Automated Keyword Extraction
+
+    # if st.sidebar.checkbox("Automated Keyword Extraction"):
+    # 	st.subheader("Extract Keywords")
+
+    # 	lang_options = st.selectbox("Choose language (EN/PT)",['EN','PT'])
+
+    # 	if lang_options == 'EN':
+    # 		lang_model = 'en'
+    # 	elif lang_options == 'PT':
+    # 		lang_model = 'pt'
+    # 	else:
+    # 		lang_model = 'en'
+
+    # 	message = st.text_area("Enter text inside the box...")
+
+    # 	if st.button("Run"):
+    # 		with st.spinner('Wait for it...'):
+                
+    # 			# set YAKE! parameters
+    # 			language = lang_model
+    # 			max_ngram_size = 2
+    # 			deduplication_thresold = 0.2
+    # 			deduplication_algo = "seqm"
+    # 			windowSize = 1
+    # 			numOfKeywords = 10
+
+    # 			custom_kw_extractor = yake.KeywordExtractor(
+    # 				lan=language,
+    # 				n=max_ngram_size,
+    # 				dedupLim=deduplication_thresold,
+    # 				dedupFunc=deduplication_algo,
+    # 				windowsSize=windowSize,
+    # 				top=numOfKeywords,
+    # 				features=None,
+    # 			)
+    # 			keywords = custom_kw_extractor.extract_keywords(message)
+    # 			keywords = [kw for kw, res in keywords]
+                
+    # 			st.success('Keywords: ' + (', '.join(sorted(keywords))))
 
 
 # Automated Keyword Extraction
 
-	if st.sidebar.checkbox("Automated Keyword Extraction"):
-		st.subheader("Extract Keywords")
+    if st.sidebar.checkbox("Automated Keyword Extraction", key='check3'):
+        st.subheader("Extract Keywords")
 
-		lang_options = st.selectbox("Choose language (EN/PT)",['EN','PT'])
+        lang_options = st.selectbox("Choose language (EN/PT)",['EN','PT'], key='sel2')
 
-		if lang_options == 'EN':
-			stop_words = en_stopwords
-			lang_model = 'en_core_web_sm'
-		else:
-			lang_model = 'pt_core_news_sm'
-			stop_words = pt_stopwords
+        if lang_options == 'EN':
+            stop_words = en_stopwords
+            lang_model = 'en_core_web_sm'
+        else:
+            lang_model = 'pt_core_news_sm'
+            stop_words = pt_stopwords
 
-		# nlp = spacy.load(lang_model)
-
-
-		message = st.text_area("Enter text inside the box...")
-
-		if st.button("Run"):
-			with st.spinner('Wait for it...'):
-				
-				# corpus = []
-				
-				text = ''.join([unidecode.unidecode(accented_string) for accented_string in message])
-				
-				corpus = clean_string(text, lang_options)
-
-				tr4w = TextRank4Keyword()
-				tr4w.set_stopwords(stopwords=stop_words, lang_model=lang_model)
-				# tr4w.set_stopwords(stopwords=stop_words)
-				# tr4w.analyze(ppp, candidate_pos = ['NOUN', 'PROPN', 'VERB'], window_size=4, lower=False)
-				tr4w.analyze(corpus, window_size=4, lower=False, lang_model=lang_model)
-
-				st.success('Keywords: ' + (', '.join(sorted(tr4w.get_keywords(10)))))
+        # nlp = spacy.load(lang_model)
 
 
+        message = st.text_area("Enter text inside the box...", key='ins3')
 
-	# Data Anonymization (erasing names)
+        if st.button("Run", key='run3'):
+            with st.spinner('Wait for it...'):
+                
+                # corpus = []
+                
+                text = ''.join([unidecode.unidecode(accented_string) for accented_string in message])
+                
+                corpus = clean_string(text, lang_options)
 
-	if st.sidebar.checkbox("Anonymize Personal Data"):
-		st.subheader("Anonymize Your Data: Hiding Names")
+                tr4w = TextRank4Keyword()
+                tr4w.set_stopwords(stopwords=stop_words, lang_model=lang_model)
+                # tr4w.set_stopwords(stopwords=stop_words)
+                # tr4w.analyze(ppp, candidate_pos = ['NOUN', 'PROPN', 'VERB'], window_size=4, lower=False)
+                tr4w.analyze(corpus, window_size=4, lower=False, lang_model=lang_model)
 
-		lang_options = st.selectbox("Choose language (EN/PT)",['EN','PT'])
-
-		if lang_options == 'EN':
-			lang_model = 'en_core_web_sm'
-		elif lang_options == 'PT':
-			lang_model = 'pt_core_news_sm'
-		else:
-			lang_model = 'en_core_web_sm'
-
-		message = st.text_area("Enter text inside the box...")
-
-		if st.button("Run"):
-			with st.spinner('Wait for it...'):
-				names_cleaned_result = sanitize_names(message, lang_model)
-				st.success(names_cleaned_result)
+                st.success('Keywords: ' + (', '.join(sorted(tr4w.get_keywords(10)))))
 
 
 
-	# N-grams
+    # Data Anonymization (erasing names)
 
-	if st.sidebar.checkbox("N-Grams Barplot"):
-		st.subheader("Visualize an N-grams barplot")
+    if st.sidebar.checkbox("Anonymize Personal Data"):
+        st.subheader("Anonymize Your Data: Hiding Names")
 
-		lang_options = st.selectbox("Choose language (EN/PT)",['EN','PT'])
+        lang_options = st.selectbox("Choose language (EN/PT)",['EN','PT'], key='sel3')
 
-		if lang_options == 'EN':
-			lang_model = 'english'
-		elif lang_options == 'PT':
-			lang_model = 'portuguese'
-		else:
-			lang_model = 'english'
+        if lang_options == 'EN':
+            lang_model = 'en_core_web_sm'
+        elif lang_options == 'PT':
+            lang_model = 'pt_core_news_sm'
+        else:
+            lang_model = 'en_core_web_sm'
 
-		ngram_options = st.selectbox("Choose N for N-grams (1, 2 or 3)",[1,2,3])
+        message = st.text_area("Enter text inside the box...", key='ins4')
 
-		if ngram_options == 1:
-			ngrams = 1
-		elif ngram_options == 2:
-			ngrams = 2
-		else:
-			ngrams = 3
-
-		message = st.text_area("Let's analyze and get some visuals...")
-		
-		if st.button("Run"):
-			with st.spinner('Wait for it...'):
-				corpus = []
-				
-				text = ''.join([unidecode.unidecode(accented_string) for accented_string in message])
-				
-				corpus.append(clean_string(text, lang_model))
-
-				top3_words = get_top_n_words(corpus, ngrams, n=20)
-				top3_df = pd.DataFrame(top3_words)
-				top3_df.columns=["N-gram", "Freq"]
-				fig = px.bar(top3_df, x='N-gram', y='Freq')
-				
-				st.plotly_chart(fig)
+        if st.button("Run", key='run4'):
+            with st.spinner('Wait for it...'):
+                names_cleaned_result = sanitize_names(message, lang_model)
+                st.success(names_cleaned_result)
 
 
-	# Wordcloud
 
-	if st.sidebar.checkbox("Wordcloud"):
-		st.subheader("Visualize a wordcloud")
+    # N-grams
 
-		lang_options = st.selectbox("Choose language (EN/PT)",['EN','PT'])
+    if st.sidebar.checkbox("N-Grams Barplot"):
+        st.subheader("Visualize an N-grams barplot")
 
-		if lang_options == 'EN':
-			lang_model = 'en_core_web_sm'
-			stop_words = en_stopwords
-		else:
-			lang_model = 'pt_core_news_sm'
-			stop_words = pt_stopwords
+        lang_option = st.selectbox("Choose language (EN/PT)",['EN','PT'], key='sel4')
 
-		message = st.text_area("Let's analyze and get some visuals...")
-		
-		if st.button("Run"):
-			with st.spinner('Wait for it...'):
-				corpus = []
-				
-				text = ''.join([unidecode.unidecode(accented_string) for accented_string in message])
-				
-				corpus.append(clean_string(text, lang_model))
-				
-				
-				#Word cloud
-				wordcloud = WordCloud(
-										background_color='white',
-										stopwords=stop_words,
-										max_words=100,
-										max_font_size=50, 
-										random_state=42
-										).generate(str(corpus))
-				fig = plt.figure(1)
-				plt.imshow(wordcloud, interpolation="bilinear")
-				plt.axis('off')
-				st.pyplot()
+        # if lang_options == 'EN':
+        #     lang_model = 'english'
+        # elif lang_options == 'PT':
+        #     lang_model = 'portuguese'
+        # else:
+        #     lang_model = 'english'
+
+        ngram_option = st.selectbox("Choose N for N-grams (1, 2 or 3)",[1,2,3], key='sel5')
+
+        # if ngram_options == 1:
+        #     ngrams = 1
+        # elif ngram_options == 2:
+        #     ngrams = 2
+        # else:
+        #     ngrams = 3
+
+        message = st.text_area("Let's analyze and get some visuals...", key='ins5')
+        
+        if st.button("Run", key='run5'):
+            with st.spinner('Wait for it...'):
+                corpus = []
+                
+                text = ''.join([unidecode.unidecode(accented_string) for accented_string in message])
+                
+                corpus.append(clean_string(text, lang_option))
+
+                top3_words = get_top_n_words(corpus, ngram_option, n=20)
+                top3_df = pd.DataFrame(top3_words)
+                top3_df.columns=["N-gram", "Freq"]
+                fig = px.bar(top3_df, x='N-gram', y='Freq')
+                
+                st.plotly_chart(fig)
+
+
+    # Wordcloud
+
+    if st.sidebar.checkbox("Wordcloud"):
+        st.subheader("Visualize a wordcloud")
+
+        lang_option = st.selectbox("Choose language (EN/PT)",['EN','PT'], key='sel6')
+
+        if lang_option == 'EN':
+            # lang_model = 'en_core_web_sm'
+            stop_words = en_stopwords
+        else:
+            # lang_model = 'pt_core_news_sm'
+            stop_words = pt_stopwords
+
+        message = st.text_area("Let's analyze and get some visuals...", key='ins6')
+        
+        if st.button("Run", key='run6'):
+            with st.spinner('Wait for it...'):
+                corpus = []
+                
+                text = ''.join([unidecode.unidecode(accented_string) for accented_string in message])
+                
+                corpus.append(clean_string(text, lang_option))
+                
+                
+                #Word cloud
+                wordcloud = WordCloud(
+                                        background_color='white',
+                                        stopwords=stop_words,
+                                        max_words=100,
+                                        max_font_size=50, 
+                                        random_state=42
+                                        ).generate(str(corpus))
+                fig = plt.figure(1)
+                plt.imshow(wordcloud, interpolation="bilinear")
+                plt.axis('off')
+                st.pyplot()
 
 
 
 if __name__ == '__main__':
-	main()
+    main()
