@@ -240,7 +240,7 @@ def main():
 
     image = Image.open('images/wordcloud.png')
 
-    st.sidebar.image(image,  width=200, key='image1')
+    st.sidebar.image(image,  width=200)
     st.sidebar.header("NLP demos")
     st.sidebar.text("Select an option and see it in action!")
 
