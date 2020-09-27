@@ -2,7 +2,8 @@ FROM python:3.7-slim
 
 WORKDIR /app
 COPY requirements.txt ./requirements.txt
-RUN apt-get upgrade -y && \
+RUN apt-get update && \
+# apt-get upgrade -y && \
 apt-get install -y git && \
 pip3 install -r requirements.txt && \
 pip3 install git+https://github.com/LIAAD/yake && \
