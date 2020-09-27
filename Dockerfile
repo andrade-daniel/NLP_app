@@ -2,7 +2,7 @@ FROM python:3.7-slim
 
 WORKDIR /app
 COPY requirements.txt ./requirements.txt
-RUN apt-get update && \\
+RUN apt-get update && \
 apt-get upgrade -y && \
 apt-get install -y git && \
 pip3 install -r requirements.txt && \
@@ -12,6 +12,8 @@ python3 -m spacy download en_core_web_sm
 
 COPY . .
 
-EXPOSE 8501
+# EXPOSE 8501
+EXPOSE 8080
 
-CMD streamlit run app.py
+# CMD streamlit run app.py
+CMD streamlit run --server.port 8080 --server.enableCORS false app.py
