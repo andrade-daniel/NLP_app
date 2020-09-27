@@ -63,9 +63,9 @@ $ docker build -f Dockerfile -t app:latest .
 
 And run it:
 ```
-$ docker run -p 8501:8501 app:latest
+$ docker run -p 80:8080 -e PORT=8080 app:latest
 ```
-Now, you just need to open at http://localhost:8501/.
+Now, you just need to open it at http://localhost/.
 
 #### Without Docker
 
