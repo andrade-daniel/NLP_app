@@ -50,7 +50,24 @@ Finally, the visualization of the old pal wordcloud. Therefore, nothing fancy go
 ![](images/app6.PNG)
 
 
-#### Installing
+## Installing
+
+
+#### With Docker
+
+Build the container:
+
+```
+$ docker build -f Dockerfile -t app:latest .
+```
+
+And run it:
+```
+$ docker run -p 8501:8501 app:latest
+```
+Now, you just need to open at http://localhost:8501/.
+
+#### Without Docker
 
 At the command prompt:
 
