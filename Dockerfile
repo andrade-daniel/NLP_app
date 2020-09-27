@@ -12,8 +12,4 @@ python3 -m spacy download en_core_web_sm
 
 COPY . .
 
-# EXPOSE 8501
-EXPOSE 8080
-
-# CMD streamlit run app.py
-CMD streamlit run --server.port 8080 --server.enableCORS false app.py
+CMD streamlit run --server.enableCORS false app.py --server.port $PORT
