@@ -199,12 +199,6 @@ def sanitize_names(text, lang_model):
 
 @st.cache(suppress_st_warning = True)
 def replace_punctuation(text):
-    # new_text_ls = []
-    # text_ls = [char for char in text]
-    # for char in text_ls:
-    #     if char in string.punctuation:
-    #         char = " "
-    #     new_text_ls.append(char)
     text_ls = [char for char in text]
     text_ls = [t.replace("\n", " ") for t in text_ls]
     text_ls = [char for char in text_ls if char.isalnum() or char == " "]
