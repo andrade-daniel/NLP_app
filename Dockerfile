@@ -2,7 +2,8 @@ FROM python:3.7-slim
 
 WORKDIR /app
 COPY requirements.txt ./requirements.txt
-RUN apt-get install -y git && \
+RUN apt-get upgrade -y && \
+apt-get install -y git && \
 pip3 install -r requirements.txt && \
 pip3 install git+https://github.com/LIAAD/yake && \
 python3 -m spacy download pt_core_news_sm && \
