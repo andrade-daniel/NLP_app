@@ -1,6 +1,7 @@
-runtime: python
-runtime_config:
-        python_version: 3
+runtime: custom
+# runtime: python
+# runtime_config:
+#         python_version: 3
 env: flex
 automatic_scaling:
     min_num_instances: 1
