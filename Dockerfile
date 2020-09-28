@@ -10,6 +10,9 @@ pip3 install git+https://github.com/LIAAD/yake && \
 python3 -m spacy download pt_core_news_sm && \
 python3 -m spacy download en_core_web_sm
 
+EXPOSE 8080
+
 COPY . .
 
-CMD streamlit run --server.enableCORS false app.py --server.port $PORT
+# CMD streamlit run --server.enableCORS false app.py --server.port $PORT
+CMD streamlit run --server.port 8080 --server.enableCORS false
