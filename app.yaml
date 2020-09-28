@@ -7,4 +7,11 @@ runtime: python37
 skip_files:
   - env/
   - .git/
+  - Dockerfile
+  - Procfile
+  - Procfile.windows
+  - README.md
+  - runtime.txt
+  - setup.py
+  - create_config.sh
 entrypoint: streamlit run --server.enableCORS false app.py --server.port 8080
