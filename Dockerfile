@@ -11,5 +11,6 @@ python3 -m spacy download pt_core_news_sm && \
 python3 -m spacy download en_core_web_sm
 
 COPY . .
-
-CMD streamlit run --server.enableCORS false app.py --server.port $PORT
+EXPOSE 8080
+# CMD streamlit run --server.enableCORS false app.py --server.port $PORT
+CMD streamlit run --server.enableCORS false app.py --server.port 8080
