@@ -6,4 +6,4 @@ env: flex
 automatic_scaling:
     min_num_instances: 1
     max_num_instances: 7
-entrypoint: streamlit run --server.enableCORS false app.py --server.port 8080
+# entrypoint: streamlit run --server.enableCORS false app.py --server.port 8080
