@@ -4,4 +4,7 @@ runtime: python37
 #   cpu: 1
 #   memory_gb: 2
 #   disk_size_gb: 10
+skip_files:
+  - env/
+  - .git/
 entrypoint: streamlit run --server.enableCORS false app.py --server.port 8080
