@@ -1,17 +1,8 @@
-runtime: custom
+runtime: python
+runtime_config:
+        python_version: 3
 env: flex
-# resources:
-#   cpu: 1
-#   memory_gb: 2
-#   disk_size_gb: 10
-# skip_files:
-#   - env/
-#   - .git/
-#   - Dockerfile
-#   - Procfile
-#   - Procfile.windows
-#   - README.md
-#   - runtime.txt
-#   - setup.py
-#   - create_config.sh
+automatic_scaling:
+    min_num_instances: 1
+    max_num_instances: 2
 entrypoint: streamlit run --server.enableCORS false app.py --server.port 8080
