@@ -1,4 +1,4 @@
-runtime: python37
+runtime: custom
 # env: flex
 # resources:
 #   cpu: 1
