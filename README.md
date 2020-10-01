@@ -1,7 +1,7 @@
 # Natural Language Processing app with demos
 A NLP app built with streamlit for demonstration purposes.
 
-You can check the demo directly here: https://nlp-demos-app.herokuapp.com/
+You can check the demo directly here: https://nlp-demos-app.azurewebsites.net/
 
 Use your own text (PT and/or EN) directly in the app to see the results.
 It includes the following demos:
