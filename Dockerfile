@@ -4,11 +4,9 @@ COPY . /app
 WORKDIR /app
 COPY requirements.txt ./requirements.txt
 RUN apt-get update && \
-# apt-get upgrade -y && \
 apt-get install -y git && \
 pip3 install -r requirements.txt
 
-# EXPOSE 8080
 EXPOSE 80
 
 RUN mkdir ~/.streamlit
@@ -17,6 +15,5 @@ RUN cp credentials.toml ~/.streamlit/credentials.toml
 
 WORKDIR /app
 
-# CMD streamlit run --server.enableCORS false app.py --server.port $PORT
 # CMD streamlit run --server.port 80 --server.enableCORS false app.py
 CMD streamlit run app.py
